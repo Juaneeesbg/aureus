@@ -1,0 +1,13 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "server.js",
+      "use": "@vercel/node"
+    }
+  ],
+  "env": {
+    "MONGO_URI": "mongodb+srv://admin_aureus:JEsteban9907@clientaureus.smjo7.mongodb.net/aureusDB?retryWrites=true&w=majority",
+    "PORT": "3000"
+  }
+}

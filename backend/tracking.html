@@ -1,0 +1,18 @@
+<div class="tracking">
+    <h2>Rastrea tu Pedido</h2>
+    <p>Selecciona tu empresa de envío e ingresa tu número de guía.</p>
+    <form action="/rastreo" method="GET">
+        <label for="empresa">Empresa de Envío:</label>
+        <select name="empresa" id="empresa" required>
+            <option value="servientrega">Servientrega</option>
+            <option value="interrapidisimo">Inter Rapidísimo</option>
+            <option value="coordinadora">Coordinadora</option>
+            <option value="tcc">TCC</option>
+        </select>
+        <br>
+        <label for="trackingNumber">Número de Guía:</label>
+        <input type="text" id="trackingNumber" name="trackingNumber" required>
+        <br>
+        <button type="submit">Rastrear</button>
+    </form>
+</div>

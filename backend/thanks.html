@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aureus | Thank You</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Syncopate:wght@400;700&family=Montserrat:wght@300;400;600;800&display=swap');
+
+        :root {
+            --purple: #8817aa;
+            --dark: #0a0a0a;
+            --light: #ffffff;
+            --gray: #888888;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: var(--dark);
+            color: var(--light);
+            font-family: 'Montserrat', sans-serif;
+            min-height: 100vh;
+            background-image: url('https://static.videezy.com/system/resources/thumbnails/000/000/129/original/FreeSmokeYoutube.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            position: relative;
+            margin-top: 10px;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 10, 10, 0.85);
+            z-index: 0;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Header Section */
+        .header {
+            text-align: center;
+            padding: 2rem 0;
+            position: relative;
+        }
+
+        .header h1 {
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+            font-size: 3.5rem;
+            margin-bottom: 1.5rem;
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            position: relative;
+            display: inline-block;
+        }
+
+        .header h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: var(--purple);
+        }
+
+        .order-confirmed {
+            font-size: 1.4rem;
+            color: var(--purple);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-family: 'Syncopate', sans-serif;
+        }
+
+        .motivational-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            max-width: 600px;
+            margin: 0 auto;
+            color: #ccc;
+            font-weight: 300;
+            letter-spacing: 1px;
+        }
+
+        /* Split Layout */
+        .split-container {
+            display: flex;
+            gap: 2rem;
+            margin: 2rem 0;
+        }
+
+        /* Left Side Content */
+        .left-content {
+            flex: 0 0 60%;
+            position: relative;
+        }
+
+        /* 3D Model Section */
+        .model-container {
+            height: 500px;
+            position: relative;
+            border: 1px solid rgba(136, 23, 170, 0.3);
+            background: rgba(136, 23, 170, 0.05);
+            border-radius: 4px;
+            overflow: hidden;
+        }
+        .model-glb{
+            margin-left: -130px;
+        }
+
+        .model-container::before {
+            content: 'AUREUS';
+            position: absolute;
+            font-family: 'Syncopate', sans-serif;
+            font-size: 15rem;
+            color: rgba(136, 23, 170, 0.03);
+            z-index: -1;
+            transform: rotate(-30deg);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+        }
+
+        /* Order Status */
+        .order-status {
+            position: absolute;
+            top: 40px;
+            right: 40px;
+            background: rgba(10, 10, 10, 0.95);
+            padding: 2rem;
+            border-radius: 4px;
+            border: 1px solid rgba(136, 23, 170, 0.3);
+            backdrop-filter: blur(10px);
+            max-width: 320px;
+        }
+
+        .status-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            opacity: 0.5;
+            transition: opacity 0.3s ease;
+        }
+
+        .status-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .status-item.active {
+            opacity: 1;
+        }
+
+        .status-item.completed .status-text {
+    color: var(--purple);
+    font-weight: 700;
+}
+
+.status-icon {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 2px solid var(--light);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 1rem;
+    font-size: 0.9rem;
+    color: var(--light);
+    transition: all 0.3s ease;
+}
+
+.status-text {
+    font-size: 1rem;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+    color: var(--light);
+}
+
+        /* Right Side Content */
+        .right-content {
+            flex: 0 0 40%;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-start;
+            gap: 2rem;
+            margin-top: 10px;
+        }
+
+        /* Action Buttons */
+        .actions {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .button {
+            padding: 1rem 2rem;
+            background: transparent;
+            border: 2px solid var(--purple);
+            color: var(--light);
+            text-decoration: none;
+            font-size: 1rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            text-align: center;
+        }
+
+        .button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: var(--purple);
+            transition: 0.5s;
+            z-index: -1;
+        }
+
+        .button:hover::before {
+            left: 0;
+        }
+
+        .button:hover {
+            color: var(--light);
+        }
+
+        /* Feedback Section */
+        .feedback {
+            padding: 2rem;
+            background: rgba(136, 23, 170, 0.05);
+            border: 1px solid rgba(136, 23, 170, 0.3);
+        }
+
+        .feedback h2 {
+            font-family: 'Syncopate', sans-serif;
+            font-weight: 700;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+            letter-spacing: 2px;
+            text-align: center;
+        }
+
+        .feedback p {
+            color: var(--gray);
+            margin-bottom: 1.5rem;
+            font-size: 1rem;
+            letter-spacing: 1px;
+            text-align: center;
+        }
+
+        .rating-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .rating-button {
+            padding: 0.8rem 1.5rem;
+            background: transparent;
+            border: 1px solid rgba(136, 23, 170, 0.3);
+            color: var(--light);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Montserrat', sans-serif;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .rating-button:hover {
+            background: var(--purple);
+            border-color: var(--purple);
+        }
+
+        @media (max-width: 768px) {
+            .split-container {
+                flex-direction: column;
+            }
+
+            .left-content, .right-content {
+                flex: 0 0 100%;
+            }
+
+            .header h1 {
+                font-size: 2.5rem;
+            }
+
+            .order-status {
+                position: static;
+                max-width: 100%;
+                margin-top: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <section class="header">
+            <h1 id="thank-you-title">AUREUS</h1>
+            <div class="order-confirmed">Orden Confirmada</div>
+            <p class="motivational-text">
+                "La moda es pasajera, pero el estilo es eterno. Bienvenido a una nueva era de expresión y autenticidad."
+            </p>
+        </section>
+
+        <div class="split-container">
+            <div class="left-content">
+                <div class="model-container">
+                    <model-viewer 
+                        class="model-glb"
+                        src="https://modelviewer.dev/shared-assets/models/Astronaut.glb" 
+                        auto-rotate 
+                        camera-controls 
+                        background-color="transparent"
+                        style="width: 100%; height: 100%;">
+                    </model-viewer>
+                </div>
+                <div class="order-status">
+                    <div class="status-item active">
+                        <div class="status-icon">
+                            <i class="fas fa-check"></i>
+                        </div>
+                        <span class="status-text">Confirmado</span>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-icon">
+                            <i class="fas fa-box"></i>
+                        </div>
+                        <span class="status-text">Preparando</span>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-icon">
+                            <i class="fas fa-truck"></i>
+                        </div>
+                        <span class="status-text">En Ruta</span>
+                    </div>
+                    <div class="status-item">
+                        <div class="status-icon">
+                            <i class="fas fa-home"></i>
+                        </div>
+                        <span class="status-text">Entregado</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="right-content">
+                <div class="actions">
+                    <a href="https://www.instagram.com/aureusclothes/" class="button">
+                        <i class="fab fa-instagram"></i> <!-- Icono de Instagram -->
+                        Comparte tu estilo
+                    </a>
+                    <a href="../Coleccion/Coleccion.html" class="button">
+                        Obten Codigo de descuento 10%
+                    </a>
+                </div>
+                
+
+                <section class="feedback">
+                    <h2>TU EXPERIENCIA</h2>
+                    <p>Cada opinión nos ayuda a evolucionar</p>
+                    <div class="rating-buttons">
+                        
+            <button class="rating-button" onclick="alert('Gracias por tu valoración: Excelente 🎉')">Excelente 🎉</button>
+            <button class="rating-button" onclick="alert('Gracias por tu valoración: Buena 👍')">Buena, pero puede mejorar 👍</button>
+            <button class="rating-button" onclick="alert('Gracias por tu valoración: Regular 💬')">Regular, quiero comentar 💬</button>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script>
+        
+        const BASE_URL = 'http://localhost:3000';
+
+        document.addEventListener('DOMContentLoaded', async function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('id');
+
+            if (orderId) {
+                try {
+                    const response = await fetch(`${BASE_URL}/get-order/${orderId}`);
+                    if (!response.ok) {
+                        throw new Error('Order not found');
+                    }
+                    
+                    const orderData = await response.json();
+                    
+                    // Actualizar el nombre del cliente
+                    const thankYouTitle = document.getElementById('thank-you-title');
+                    thankYouTitle.textContent = orderData.name || 'AUREUS';
+
+                    // Obtener todos los items de estado
+                    const statusItems = document.querySelectorAll('.status-item');
+                    
+                    // Primero, remover todas las clases activas y completed
+                    statusItems.forEach(item => {
+                        item.classList.remove('active', 'completed');
+                    });
+
+                    // Mapear estados a índices y textos exactos
+                    const statusMap = {
+                        '--': 0,
+                        'Confirmado': 0,
+                        'Preparando': 1,
+                        'En ruta': 2,
+                        'Entregado': 3
+                    };
+
+                    // Obtener el índice del estado actual
+                    const currentStatus = orderData.tracking || '--';
+                    const currentStatusIndex = statusMap[currentStatus];
+
+                    if (currentStatusIndex >= 0) {
+                        // Activar todos los estados hasta el actual
+                        statusItems.forEach((item, index) => {
+                            if (index <= currentStatusIndex) {
+                                item.classList.add('completed');
+                                
+                                // El estado actual también debe estar activo
+                                if (index === currentStatusIndex) {
+                                    item.classList.add('active');
+                                }
+                            }
+                        });
+                    }
+
+                } catch (error) {
+                    console.error('Error fetching order:', error);
+                    // Manejar el error apropiadamente
+                }
+            }
+        });
+    </script>
+</body>
+</html>

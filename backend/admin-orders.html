@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Órdenes de Admin</title>
+    <link rel="icon" href="../Favicon.png" type="image/x-icon">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        #orders-table {
+            width: 100%;
+            border-collapse: collapse;
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        #orders-table th, #orders-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        #orders-table th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color: #333;
+        }
+        .status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .status-pendiente {
+            background-color: #FFC107;
+            color: white;
+        }
+        .status-confirmado {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .status-cancelado {
+            background-color: #F44336;
+            color: white;
+        }
+        .tracking-status {
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-weight: bold;
+        }
+        .tracking-confirmado { background-color: #4CAF50; color: white; }
+        .tracking-preparando { background-color: #2196F3; color: white; }
+        .tracking-enruta { background-color: #FF9800; color: white; }
+        .tracking-entregado { background-color: #9C27B0; color: white; }
+        
+        .tracking-dropdown {
+        position: relative;
+        display: inline-block;
+        }
+
+        .tracking-button {
+            background-color: #4c66af;
+            color: white;
+            padding: 4px 3px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 80px;  /* Aumentado para mejor visibilidad */
+            text-align: center;  /* Centrado el texto */
+        }
+
+        /* Agregar estilo para el estado inicial */
+        .tracking-initial {
+            background-color: #808080;  /* Gris para estado inicial */
+        }
+
+        .tracking-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+        }
+
+        .tracking-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+        }
+
+        .tracking-content a:hover {
+            background-color: #f1f1f1;
+        }
+
+        .show {
+            display: block;
+        }
+
+        /* Estilos para el menú desplegable de acciones */
+        .actions-dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        .actions-button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        .actions-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+            border-radius: 4px;
+        }
+        .actions-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+            cursor: pointer;
+        }
+        .actions-content a:hover {
+            background-color: #f1f1f1;
+        }
+        .show {
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Órdenes Recibidas</h1>
+    
+    <table id="orders-table">
+        <thead>
+            <tr>
+                <th>Nombre</th>
+                <th>Dirección y Ciudad</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+                <th>Producto</th>
+                <th>Precio Total</th>
+                <th>Código Descuento</th>
+                <th>Nota</th>
+                <th>Método de Pago</th>
+                <th>Fecha de Ingreso</th>
+                <th>Estado</th>
+                <th>Tracking</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody id="orders-list">
+            <!-- Las órdenes se agregarán aquí dinámicamente -->
+        </tbody>
+    </table>
+
+    <script>
+        const BASE_URL = 'http://localhost:3000';
+
+         async function loadOrders() {
+            try {
+                const response = await fetch(`${BASE_URL}/get-orders`);
+                const orders = await response.json();
+                const ordersListTbody = document.getElementById('orders-list');
+                
+                orders.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+
+                if (orders.length === 0) {
+                    ordersListTbody.innerHTML = `
+                        <tr>
+                            <td colspan="13" style="text-align:center;">No hay órdenes aún.</td>
+                        </tr>
+                    `;
+                } else {
+                    ordersListTbody.innerHTML = orders.map(order => {
+                    const total = order.total ? `$${order.total.toLocaleString('es-CO')}` : 'N/A';
+                    
+                    const statusClass = {
+                        'pendiente': 'status-pendiente',
+                        'confirmado': 'status-confirmado',
+                        'cancelado': 'status-cancelado'
+                    }[order.status] || 'status-pendiente';
+
+                    const productos = order.cart ? order.cart.map(item => 
+                        `${item.title} (Talla: ${item.size}, Precio: ${item.price})`
+                    ).join('<br>') : 'Sin productos';
+
+                    
+                    let trackingInitialClass = '';
+                        let trackingText = order.tracking || '--';  // Si no hay tracking, mostrar --
+                        
+                        if (trackingText === '--') {
+                            trackingInitialClass = 'tracking-initial';
+                        }
+
+                        const trackingButtonClass = `tracking-button ${trackingInitialClass}`;
+
+                        return `
+                            <tr data-order-row-id="${order._id}">
+
+                            <td>${order.name || 'N/A'}, ${order._id || 'N/A'}</td>
+                            <td>${order.address || 'N/A'}, ${order.city || 'N/A'}</td>
+                            <td>${order.phone || 'N/A'}</td>
+                            <td>${order.email || 'N/A'}</td>
+                            <td>${productos}</td>
+                            <td>${total}</td>
+                            <td>${order.discountCode || 'No código'}</td>
+                            <td>${order.notes || ''}</td>
+                            <td>${order.paymentMethod || 'N/A'}</td>
+                            <td>${new Date(order.timestamp).toLocaleString()}</td>
+                            <td>
+                                <span class="status ${statusClass}">
+                                    ${order.status || 'pendiente'}
+                                </span>
+                            </td>
+                            <td>
+                                    <div class="tracking-dropdown">
+                                        <button onclick="toggleTracking('${order._id}')" class="${trackingButtonClass}">
+                                            ${trackingText}
+                                        </button>
+                                        <div id="tracking-${order._id}" class="tracking-content">
+                                            <a onclick="actualizarTracking('${order._id}', 'Confirmado')">Confirmado</a>
+                                            <a onclick="actualizarTracking('${order._id}', 'Preparando')">Preparando</a>
+                                            <a onclick="actualizarTracking('${order._id}', 'En ruta')">En ruta</a>
+                                            <a onclick="actualizarTracking('${order._id}', 'Entregado')">Entregado</a>
+                                        </div>
+                                    </div>
+                                </td>
+                            <td>
+                                <div class="actions-dropdown">
+                                    <button onclick="toggleActions('${order._id}')" class="actions-button">Acciones</button>
+                                    <div id="actions-${order._id}" class="actions-content">
+                                        <a onclick="cambiarEstado('${order._id}', 'confirmado')">Confirmar</a>
+                                        <a onclick="cambiarEstado('${order._id}', 'cancelado')">Cancelar</a>
+                                        <a onclick="eliminarOrden('${order._id}')">Eliminar</a>
+                                    </div>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+            }
+        } catch (error) {
+            console.error('Error al cargar las órdenes:', error);
+            document.getElementById('orders-list').innerHTML = `
+                <tr>
+                    <td colspan="13" style="text-align:center;">Error al cargar las órdenes.</td>
+                </tr>
+            `;
+        }
+    }
+
+    function toggleTracking(orderId) {
+        const dropdowns = document.getElementsByClassName("tracking-content");
+        Array.from(dropdowns).forEach(dropdown => {
+            if (dropdown.id !== `tracking-${orderId}`) {
+                dropdown.classList.remove('show');
+            }
+        });
+        document.getElementById(`tracking-${orderId}`).classList.toggle("show");
+    }
+
+
+    function toggleActions(orderId) {
+            const dropdowns = document.getElementsByClassName("actions-content");
+            Array.from(dropdowns).forEach(dropdown => {
+                if (dropdown.id !== `actions-${orderId}`) {
+                    dropdown.classList.remove('show');
+                }
+            });
+            document.getElementById(`actions-${orderId}`).classList.toggle("show");
+        }
+
+        // Cerrar el menú si el usuario hace clic fuera de él
+        window.onclick = function(event) {
+        if (!event.target.matches('.tracking-button') && !event.target.matches('.actions-button')) {
+            const dropdowns = document.getElementsByClassName("tracking-content");
+            Array.from(dropdowns).forEach(dropdown => {
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            });
+            const actionDropdowns = document.getElementsByClassName("actions-content");
+            Array.from(actionDropdowns).forEach(dropdown => {
+                if (dropdown.classList.contains('show')) {
+                    dropdown.classList.remove('show');
+                }
+            });
+        }
+    }
+
+    async function actualizarTracking(orderId, nuevoEstado) {
+            try {
+                const response = await fetch(`${BASE_URL}/update-tracking`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        orderId: orderId, 
+                        trackingStatus: nuevoEstado 
+                    })
+                });
+
+                if (response.ok) {
+                    const button = document.querySelector(`[data-order-row-id="${orderId}"] .tracking-button`);
+                    if (button) {
+                        button.textContent = nuevoEstado;
+                        button.classList.remove('tracking-initial');  // Remover clase inicial si existe
+                    }
+                    
+                    document.getElementById(`tracking-${orderId}`).classList.remove('show');
+                    alert(`Estado de tracking actualizado a: ${nuevoEstado}`);
+                } else {
+                    alert('Error al actualizar el estado de tracking');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de conexión');
+            }
+        }
+
+
+        async function cambiarEstado(orderId, nuevoEstado) {
+            try {
+                const response = await fetch(`${BASE_URL}/update-order-status`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ 
+                        orderId: orderId, 
+                        status: nuevoEstado 
+                    })
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    const row = document.querySelector(`[data-order-row-id="${orderId}"]`);
+                    if (row) {
+                        const statusElement = row.querySelector('.status');
+                        if (statusElement) {
+                            statusElement.textContent = nuevoEstado;
+                            statusElement.className = `status status-${nuevoEstado}`;
+                        }
+                    }
+                    alert(`Estado actualizado a: ${nuevoEstado}`);
+                    // Cerrar el menú desplegable después de la acción
+                    document.getElementById(`actions-${orderId}`).classList.remove('show');
+                } else {
+                    alert(result.message || 'Error al actualizar el estado');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de conexión');
+            }
+        }
+
+        async function eliminarOrden(orderId) {
+            if (!confirm('¿Estás seguro de que quieres eliminar esta orden?')) {
+                return;
+            }
+
+            try {
+                const response = await fetch(`${BASE_URL}/delete-order/${orderId}`, {
+                    method: 'DELETE'
+                });
+
+                const result = await response.json();
+
+                if (response.ok) {
+                    const row = document.querySelector(`[data-order-row-id="${orderId}"]`);
+                    if (row) {
+                        row.remove();
+                    }
+                    alert('Orden eliminada exitosamente');
+                } else {
+                    alert(result.message || 'Error al eliminar la orden');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error de conexión');
+            }
+        }
+
+        // Cargar órdenes cuando se carga la página
+        window.onload = loadOrders;
+    </script>
+</body>
+</html>

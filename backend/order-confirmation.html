@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmación de Pedido</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background-color: #f4f4f4;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .confirmation-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            width: 100%;
+            max-width: 600px;
+        }
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .order-details {
+            margin-top: 20px;
+            background-color: #f9f9f9;
+            padding: 20px;
+            border-radius: 5px;
+        }
+        .order-details h2 {
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+            margin-bottom: 15px;
+        }
+        .order-details p {
+            margin: 10px 0;
+        }
+        .product-list {
+            list-style-type: none;
+            padding: 0;
+        }
+        .product-list li {
+            background-color: #f1f1f1;
+            margin: 10px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="confirmation-container">
+        <h1 style="text-align: center; color: #2ecc71;">¡Pedido en Espera!</h1>
+        <div class="spinner"></div>
+        
+        <div id="order-details" class="order-details">
+            <!-- Detalles de la orden se insertarán aquí -->
+        </div>
+        
+        <p style="text-align: center; color: #7f8c8d; margin-top: 20px;">
+            Será redirigido al método de pago en breve...
+        </p>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+    // Recuperar la última orden guardada
+    const lastOrder = localStorage.getItem('lastOrder');
+    const paymentMethod = localStorage.getItem('paymentMethod');
+    const orderId = localStorage.getItem('orderId');
+    
+    if (lastOrder) {
+        const order = JSON.parse(lastOrder);
+        const orderDetailsDiv = document.getElementById('order-details');
+        
+        // Calcular total
+        const total = order.cart.reduce((sum, item) => 
+            sum + parseFloat(item.price.replace('$', '').replace(',', '')), 0);
+        
+        // Crear HTML para mostrar detalles de la orden
+        let orderHTML = `
+            <h2>Detalles del Pedido</h2>
+            <p><strong>Nombre:</strong> ${order.name}</p>
+            <p><strong>Dirección:</strong> ${order.address}, ${order.city}</p>
+            <p><strong>Teléfono:</strong> ${order.phone}</p>
+            <p><strong>Correo:</strong> ${order.email}</p>
+            <p><strong>Notas Adicionales:</strong> ${order.notes}</p>
+            <p><strong>Método de Pago:</strong> ${order.paymentMethod}</p>
+            <p><strong>ID de Orden:</strong> ${orderId}</p>
+            
+            <h3>Productos:</h3>
+            <ul class="product-list">
+                ${order.cart.map(item => `
+                    <li>
+                        ${item.title} - Talla: ${item.size} - Precio: ${item.price}
+                    </li>
+                `).join('')}
+            </ul>
+            
+            <p style="text-align: right; font-weight: bold;">
+                Total: $${total.toFixed(2)}
+            </p>
+        `;
+        
+        orderDetailsDiv.innerHTML = orderHTML;
+
+        // Redirigir según el método de pago
+        setTimeout(() => {
+            switch(order.paymentMethod) {
+                case 'credit-card':
+                    window.location.href = `/backend/thanks.html?id=${orderId}`;
+                    break;
+                case 'paypal':
+                    window.location.href = 'thanks.html';
+                    break;
+                    case 'nequi':
+                case 'daviplata':
+                    const whatsappMessage = createWhatsAppMessage(order);
+                    const whatsappNumber = '573138977112'; // Reemplaza con tu número
+                    window.location.href = `https://wa.me/${whatsappNumber}?text=${whatsappMessage}`;
+                    break;
+                default:
+                    window.location.href = '../index.html';
+            }
+        }, 3500); // 3.5 segundos
+    } else {
+        // Si no hay orden, redirigir a la página principal
+        window.location.href = '../index.html';
+    }
+});
+
+// Función para formatear el carrito para WhatsApp
+function formatCartForWhatsApp(cart) {
+    return cart.map(item => 
+        `• ${item.title} - Talla: ${item.size} - Precio: $${parseFloat(item.price.replace('$', '').replace(',', '')).toLocaleString('es-CO')}`
+    ).join('\n');
+}
+
+// Función para crear el mensaje de WhatsApp
+function createWhatsAppMessage(orderData) {
+    const cartText = formatCartForWhatsApp(orderData.cart);
+    const message = `Hola, ¡Nuevo pedido!%0A
+-------------------%0A
+*Datos mios:*%0A
+Nombre: ${orderData.name}%0A
+Dirección: ${orderData.address}%0A
+Ciudad: ${orderData.city}%0A
+Teléfono: ${orderData.phone}%0A
+Email: ${orderData.email}%0A
+%0A
+*Productos:*%0A${cartText.replace(/\n/g, '%0A')}%0A
+%0A
+*Total del pedido: $${orderData.total.toLocaleString('es-CO')}*%0A
+%0A
+Método de pago: ${orderData.paymentMethod === 'nequi' ? 'Nequi' : 'Daviplata'}%0A
+-------------------%0A
+${orderData.notes ? `Notas: ${orderData.notes}%0A` : ''}`;
+
+    return message;
+}
+
+    </script>
+</body>
+</html>
