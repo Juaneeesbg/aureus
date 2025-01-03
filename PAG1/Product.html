@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title id="page-title">Producto Nombre</title> <!-- Título Dinámico -->
+    <link rel="icon" href="../favicon.png" type="image/x-icon">
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Menú -->
+    <!-- Navigation -->
+    <nav>
+        <!-- Menú hamburguesa para móvil -->
+        <div class="hamburger-menu">
+            <div class="hamburger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    
+        <!-- Menú de la izquierda (original) -->
+        <ul class="menu-left">
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="../Coleccion/Coleccion.html">Colecciones</a></li>
+        </ul>
+        
+        <!-- Logo (original) -->
+        <a href="../index.html">
+            <model-viewer 
+                src="../3D/logo.glb" 
+                alt="Logo Aureus 3D"
+                camera-controls
+                disable-zoom
+                camera-orbit="0deg 90deg 15m"
+                min-camera-orbit="0deg 90deg 18m"
+                max-camera-orbit="360deg 90deg 18m"
+                style="width: 250px; height: 80px;">
+            </model-viewer>         
+        </a>
+    
+        <!-- Menú de la derecha (original) -->
+            <ul class="menu-right">
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+                <!-- Carrito de compras -->
+                <li><a href="#" id="cart-icon">
+                    🛒 <span id="cart-count" >0</span>
+                </a></li>
+            </ul>
+    
+        <!-- Menú móvil superpuesto -->
+        <div class="mobile-menu">
+            <ul>
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../Coleccion/Coleccion.html">Colecciones</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Contenedor de carrito lateral (oculto por defecto) -->
+<div id="side-panel" class="side-panel">
+    <div class="side-panel-header">
+        <h2>Carrito</h2>
+        <button id="close-panel" class="close-panel">X</button>
+    </div>
+    <div id="cart-items" class="cart-items">
+        <!-- Los artículos del carrito se agregarán aquí dinámicamente -->
+    </div>
+    <div class="side-panel-footer">
+        <p>Total: <span id="cart-total">$0.00</span></p>
+        <a href="../Checkout/checkout.html"><button id="checkout-button">Pagar</button></a>
+    </div>
+</div>
+    <div class="product-container">
+        <!-- Título y subtítulo -->
+        <div class="content">
+            <h1 id="main-title"> </h1> <!-- Título principal dinámico -->
+            <p id="main-subtitle" class="subtitle"> </p> <!-- Subtítulo dinámico -->
+        </div>
+
+        <!-- Modelo 3D de la camiseta -->
+        <div class="model-viewer">
+            <model-viewer 
+                id="model-3d" 
+                class="camiseta" 
+                src="NoLoveCamiseta.glb" 
+                alt="Modelo 3D" 
+                auto-rotate 
+                camera-controls
+                camera-orbit="0deg 90deg 7m"
+                min-camera-orbit="-1100deg 90deg 6m"
+                max-camera-orbit="1100deg 90deg 6.8m"
+                style="background-color: transparent;">
+            </model-viewer>
+
+        </div>
+
+        <!-- Botones de selección de talla -->
+        <div class="sizes" id="size-select">
+            <button class="size-button" id="S">S</button>
+            <button class="size-button" id="M">M</button>
+            <button class="size-button" id="L">L</button>
+            <button class="size-button" id="XL">XL</button>
+        </div>
+        <!-- Precio -->
+        <div class="buy-container">
+            <span id="price" class="price">$85,000</span>
+            <span id="price-old" class="price-old">$120,000</span>
+            <button class="buy-button" onclick="addToCart()">Buy Now</button>
+        </div>
+    </div>
+
+    <!-- Descripción del producto -->
+    <div class="product-details-container">
+        <!-- Galería de imágenes -->
+        <div class="gallery-container">
+            <h3 class="uppercase">Galería de Imágenes</h3>
+            <div class="main-image">
+                <img id="main-image" src="Product1.png" alt="Camiseta Imagen Principal">
+            </div>
+            <div class="thumbnail-gallery">
+                <!-- Las miniaturas ya no están estáticas, se actualizarán dinámicamente con JavaScript -->
+                <img class="thumbnail" src="" alt="Imagen 1" onclick="changeImage(this.src)">
+                <img class="thumbnail" src="" alt="Imagen 2" onclick="changeImage(this.src)">
+                <img class="thumbnail" src="" alt="Imagen 3" onclick="changeImage(this.src)">
+                <img class="thumbnail" src="" alt="Imagen 4" onclick="changeImage(this.src)">
+                <img class="thumbnail" src="" alt="Imagen 5" onclick="changeImage(this.src)">
+            </div>
+            
+        </div>
+
+        <div class="product-details">
+            <!-- Título del producto -->
+            <h2 id="product-name">Producto Nombre <span id="product-subtitle"> Subtítulo</span></h2>
+            
+            <!-- Cita inspiradora -->
+            <p id="product-quote" class="inspirational-quote">"Cita inspiradora"</p> 
+            
+            <!-- Descripción del producto -->
+            <p id="product-description" class="description">
+                Descripción del producto.</p>
+                <br><br>
+                <p id="product-description" class="description">
+                Tamaños disponibles: S, M, L, XL. 
+                <br><br>
+                Medidas:
+                - Longitud: 68 cm<br></br>
+                - Ancho: 62 cm<br></br>
+                - Manga: 20 cm
+            </p>
+        
+            <!-- Enlaces de redes sociales -->
+            <div class="social-media">
+                <a href="#" class="social-button">Facebook</a>
+                <a href="#" class="social-button">Instagram</a>
+                <a href="#" class="social-button">Twitter</a>
+            </div>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
