@@ -283,7 +283,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     };
     
                     // Save order to backend before redirecting
-                    const response = await fetch('http://localhost:3000/save-order', {
+                    const response = await fetch('https://aureus-gcph.onrender.com/save-order', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
@@ -373,7 +373,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
             if (paymentMethod.value === 'nequi' || paymentMethod.value === 'credit-card') {
                 try {
-                    const response = await fetch('http://localhost:3000/save-order', {
+                    const response = await fetch('https://aureus-gcph.onrender.com/save-order', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
