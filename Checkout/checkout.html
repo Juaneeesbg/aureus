@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Aureus</title>
+    <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+    <script src="https://www.paypal.com/sdk/js?client-id=AffJ8Bg8BWFqNdOzI1_-0HYnu_lwp-VJt2oAkzxINlpwgIaVDoDP_0WEcJJVomg-XM6BioOJNqyqOX6R&currency=USD"></script>
+    <script src="https://secure.mlstatic.com/sdk/javascript/v1/mercadopago.js"></script>
+    <script src="https://sdk.mercadopago.com/js/v2"></script>
+<!-- Vincular el archivo CSS -->
+    <link rel="icon" href="../Favicon.png" type="image/x-icon">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="inspirational-text">
+        <h2>Tu camino hacia el streetwear perfecto comienza aquí.</h2>
+        <p>Aureus, viste la ambición.</p>
+    </div>
+    <!-- Mantener la estructura de navegación existente -->
+    <!-- Navigation -->
+    <nav>
+        <!-- Menú hamburguesa para móvil -->
+        <div class="hamburger-menu">
+            <div class="hamburger-icon">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    
+        <!-- Menú de la izquierda (original) -->
+        <ul class="menu-left">
+            <li><a href="../index.html">Inicio</a></li>
+            <li><a href="../Coleccion/Coleccion.html">Colecciones</a></li>
+        </ul>
+        
+        <!-- Logo (original) -->
+        <a id="logo-link">
+            <model-viewer 
+                id="logo-viewer"
+                src="../3D/logo.glb" 
+                alt="Logo Aureus 3D"
+                auto-rotate 
+                camera-controls
+                disable-zoom
+                camera-orbit="0deg 90deg 7m"
+                min-camera-orbit="-1100deg 90deg 18m"
+                max-camera-orbit="1100deg 90deg 18m"
+                style="width: 250px; height: 80px;">
+            </model-viewer>         
+        </a>
+    
+        <!-- Menú de la derecha (original) -->
+        <ul class="menu-right">
+            <li><a href="#nosotros">Nosotros</a></li>
+            <li><a href="#contacto">Contacto</a></li>
+            <!-- Carrito de compras -->
+            <li><a href="#" id="cart-icon">
+                🛒 <span id="cart-count">0</span>
+            </a></li>
+        </ul>
+
+        <!-- Menú móvil superpuesto -->
+        <div class="mobile-menu">
+            <ul>
+                <li><a href="../index.html">Inicio</a></li>
+                <li><a href="../Coleccion/Coleccion.html">Colecciones</a></li>
+                <li><a href="#nosotros">Nosotros</a></li>
+                <li><a href="#contacto">Contacto</a></li>
+            </ul>
+        </div>
+    </nav>
+    <!-- Contenedor de carrito lateral (oculto por defecto) -->
+        <div id="side-panel" class="side-panel">
+            <div class="side-panel-header">
+                <h2>Carrito</h2>
+                <button id="close-panel" class="close-panel">X</button>
+            </div>
+            <div id="cart-items" class="cart-items">
+                <!-- Los artículos del carrito se agregarán aquí dinámicamente -->
+            </div>
+            <div class="side-panel-footer">
+                <p>Total: <span id="cart-total">$0.00</span></p>
+                <a href="../Checkout/checkout.html"><button id="checkout-button">Pagar</button></a>
+            </div>
+        </div>
+    </nav>
+
+
+
+    <div class="progress-container">
+        <div class="progress-bar">
+            <div class="progress-step active" data-step="1">
+                <div class="step-number">1</div>
+                <div class="step-text">Datos de envío</div>
+            </div>
+            <div class="progress-step" data-step="2">
+                <div class="step-number">2</div>
+                <div class="step-text">Método de pago</div>
+            </div>
+            <div class="progress-step" data-step="3">
+                <div class="step-number">3</div>
+                <div class="step-text">Confirmación</div>
+            </div>
+            <div class="progress-line">
+                <div class="progress-line-fill"></div>
+            </div>
+        </div>
+        <div class="progress-description">
+            Llena tus datos personales para recibir tu pedido.
+        </div>
+    </div>
+
+
+
+    <div class="checkout-container">
+        <div class="checkout-info">
+            <div class="checkout-header">
+                <h1>Resumen de tu Pedido</h1>
+            </div>
+            
+            <!-- Formulario de cliente existente -->
+            <form id="customer-info">
+                <h2>Datos de Envío</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="fullname">Nombre Completo</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico</label>
+                        <input type="text" id="email" name="email" required>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="phone">Teléfono</label>
+                        <input type="text" id="phone" name="phone" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="address">Dirección de Entrega</label>
+                    <input type="text" id="address" name="address" required>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="city">Ciudad</label>
+                        <input type="text" id="city" name="city" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="postal-code">Código Postal</label>
+                        <input type="text" id="postal-code" name="postal-code" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="notes">Notas Adicionales (Opcional)</label>
+                    <textarea id="notes" name="notes" rows="3"></textarea>
+                </div>
+
+                <h3>Seleccionar Método de Pago:</h3>
+                <div id="warning-message" style="display: none; color: red; margin-bottom: 10px;">
+                    Por favor, completa todos los campos requeridos antes de proceder con el pago.
+                </div>
+                
+                <div class="payment-methods">
+                    <label class="payment-method">
+                        <input type="radio" name="payment-method" value="credit-card">
+                            <div class="method-content">
+                            <span>Tarjeta de Crédito</span>
+                            <div class="image-block">
+                                <img src="https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.en/assets/amex.Csr7hRoy.svg" alt="Imagen 1">
+                                <img src="https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.en/assets/mastercard.1c4_lyMp.svg" alt="Imagen 2">
+                                <img src="https://cdn.shopify.com/shopifycloud/checkout-web/assets/c1.en/assets/visa.sxIq5Dot.svg" alt="Imagen 3">
+                            </div>
+                        </div>
+                        
+                    </label>
+                
+                    <label class="payment-method">
+                        <input type="radio" name="payment-method" value="paypal">
+                        <div class="method-content">
+                            <span>PayPal</span>
+                            <div class="image-block">
+                                <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/b5/PayPal.svg/2560px-PayPal.svg.png" alt="PayPal Icon">
+                            </div>
+                        </div>
+                    </label>
+                
+                    <label class="payment-method">
+                        <input type="radio" name="payment-method" value="nequi">
+                        <div class="method-content">
+                            <span>Nequi - Daviplata</span>
+                            <div class="image-block2">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRXCHJ07-J-J9e5_Fj8TvN7Dev9gdX3kzgZqQ&s" alt="PayPal Icon">
+                                <img src="https://seeklogo.com/images/D/daviplata-logo-750F0FC1B7-seeklogo.com.png" alt="PayPal Icon">
+                            </div>
+                        </div>
+                    </label>
+                
+                    <label class="payment-method">
+                        <input type="radio" id="pse-payment" name="payment-method" value="pse">
+                        <div class="method-content">
+                            <span>PSE (Pago Seguro en Línea)</span>
+                            <div class="image-block">
+                                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8km1OJAbtzEnaCSCPFlIp3q7sLW2KvWgtbA&s" alt="PSE Logo" />
+                            </div>
+                        </div>
+                    </label>
+                    <!-- Agregar esto justo después del label de PSE -->
+                    <div id="wallet_container" style="display: none;"></div>
+                    </form>
+                    <div id="paypal-additional-info">
+                        <p>After clicking "Pay with PayPal", you will be redirected to PayPal to complete your purchase securely.</p>
+                    </div>
+    
+                    <div id="paypal-button-container">
+                        <!-- Botón de PayPal se insertará aquí -->
+                    </div>
+                    
+                    <button id="confirm-order-button" type="submit" class="btn">Confirmar Pedido</button>
+                </div>
+                
+
+                
+            </form>
+        </div>
+        
+        <div class="order-summary">
+            <div id="checkout-items">
+                <!-- Productos se renderizarán aquí -->
+            </div>
+    
+            <div class="promo-code-container">
+                <div class="promo-input-group">
+                    <input type="text" id="promo-code" placeholder="Código promocional">
+                    <button id="apply-promo">Aplicar</button>
+                </div>
+                <div id="promo-message"></div>
+            </div>
+
+            <div class="checkout-total">
+                <h2>Total: <span id="checkout-total">$0</span></h2>
+            </div>
+        </div>
+    </div>
+
+    <div class="related-products-popup">
+        <div class="popup-content">
+            <h3>¿Quieres completar tu look?</h3>
+            <div class="related-products">
+                <div class="related-product" data-id="1">
+                    <img src="../Coleccion/Galleria/WhiCupid.png" alt="Producto 1">
+                    <h4>Camiseta Premium</h4>
+                    <p>$85,000</p>
+                    <button class="add-related">Agregar al pedido</button>
+                </div>
+                <div class="related-product" data-id="2">
+                    <img src="../Coleccion/Galleria/WhiFire.png" alt="Producto 2">
+                    <h4>Gorra Exclusiva</h4>
+                    <p>$39.99</p>
+                    <button class="add-related">Agregar al pedido</button>
+                </div>
+            </div>
+            <button class="close-popup">No, gracias</button>
+        </div>
+</div>
+    <script src="script.js" ></script>
+</body>
+</html>
+                
+                
